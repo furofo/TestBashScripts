@@ -16,5 +16,35 @@ jobs:
         with:
           python-version: '3.x'
 
-      - name: Run hello script checker
-        run: python3 tests/run_hello_check.py
+      - name: Run hello script checker and capture result
+        id: hello_check
+        run: |
+          mkdir -p artifacts
+          set +e
+          python3 -m unittest discover -s tests -p "run_hello_check.py" -v 2>&1 | tee artifacts/test-output.txt
+          exit_code=${PIPESTATUS[0]}
+          set -e
+
+          if [ "$exit_code" -eq 0 ]; then
+            status="PASS"
+          else
+            status="FAIL"
+          fi
+
+          echo "$status" > artifacts/test-result.txt
+          echo "Hello check completed with status: $status"
+          echo "exit_code=$exit_code" >> "$GITHUB_OUTPUT"
+          echo "status=$status" >> "$GITHUB_OUTPUT"
+
+      - name: Upload test artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: testbash-result
+          path: artifacts/
+
+      - name: Fail workflow when checker fails
+        if: steps.hello_check.outputs.exit_code != '0'
+        run: |
+          echo "Failing job because hello check returned non-zero exit code"
+          exit 1
