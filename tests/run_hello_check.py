@@ -6,7 +6,7 @@ import sys
 
 
 def main() -> int:
-    script_path = Path(__file__).resolve().parent / "hello.sh"
+    script_path = Path(__file__).resolve().parent.parent / "scripts" / "hello.sh"
 
     result = subprocess.run(
         ["bash", str(script_path)],

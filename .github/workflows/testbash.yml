@@ -17,4 +17,4 @@ jobs:
           python-version: '3.x'
 
       - name: Run hello script checker
-        run: python3 run_hello_check.py
+        run: python3 tests/run_hello_check.py
