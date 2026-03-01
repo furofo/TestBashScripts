@@ -16,7 +16,7 @@ class TestHelloScript(unittest.TestCase):
             check=False,
         )
 
-        expected_stdout = "hello worlds"
+        expected_stdout = "hello world"
         actual_stdout = result.stdout.strip()
 
         self.assertEqual(
